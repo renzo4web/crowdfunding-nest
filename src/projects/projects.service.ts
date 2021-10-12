@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project-dto';
 import { Project } from './entities/project.entity';
 
-// TODO: implement DB mongo? typeORM
 @Injectable()
 export class ProjectsService {
+  // TODO: implement DB mongo? typeORM
   private projects: Project[] = [
     {
       id: 23213,
@@ -14,10 +14,28 @@ export class ProjectsService {
       curr_amount: 100,
       status: 'in-progress',
     },
+    {
+      id: 311123,
+      name: 'youtube',
+      code: 'YOU',
+      goal: 100,
+      curr_amount: 100,
+      status: 'completed',
+    },
+    {
+      id: 33141,
+      name: 'argentina',
+      code: 'ARG',
+      goal: 1000,
+      curr_amount: 100,
+      status: 'in-progress',
+    },
   ];
 
-  findAll(): Project[] {
-    return this.projects;
+  findAll(status?: string): Project[] {
+    return status
+      ? this.projects.filter((project) => project.status === status)
+      : this.projects;
   }
 
   findByProjectCode(projectCode: string): Project {
