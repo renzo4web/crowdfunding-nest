@@ -12,6 +12,7 @@ async function bootstrap() {
     .setTitle('Crowdfunding API')
     .setDescription('Crowdfunding API crud')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

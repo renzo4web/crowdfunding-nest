@@ -6,6 +6,7 @@ import {
   Request,
   Body,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { LoginUserDto } from './auth/dto/login-dto';
@@ -39,6 +40,7 @@ export class AppController {
     return this.usersService.createUser(body);
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('protected')
   getHello(): string {

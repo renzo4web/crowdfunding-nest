@@ -11,15 +11,18 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateProjectDto } from './dto/create-project-dto';
 import { UpdateProjectDto } from './dto/update-project-dto';
 import { Project } from './entities/project.entity';
@@ -31,12 +34,16 @@ export class ProjectsController {
   constructor(private projectsService: ProjectsService) {}
 
   @ApiOkResponse({ type: Project, isArray: true })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiQuery({ required: false, name: 'status' })
   @Get()
   async getProjects(@Query('status') status?: string): Promise<Project[]> {
     return this.projectsService.findAll(status);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: Project })
   @ApiNotFoundResponse()
   @Get(':code')
@@ -50,6 +57,8 @@ export class ProjectsController {
     return project;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiCreatedResponse({ type: Project }) // for the documentation of swagger
   @ApiBadRequestResponse()
   @Post()
@@ -68,6 +77,8 @@ export class ProjectsController {
     return this.projectsService.createProject(body);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiCreatedResponse({ type: Project }) // for the documentation of swagger
   @ApiBadRequestResponse()
   @Put()
@@ -79,6 +90,8 @@ export class ProjectsController {
     return this.projectsService.updateProject(body);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiCreatedResponse({ type: Project })
   @Delete(':id')
   async deleteProject(@Param('id') id: number): Promise<Project> {
