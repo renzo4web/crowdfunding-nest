@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Project {
+export class User {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
@@ -13,22 +13,11 @@ export class Project {
 
   @ApiProperty()
   @Column()
-  code: string;
+  email: string;
 
   @ApiProperty()
   @Column()
-  goal: number;
-
-  @ApiProperty()
-  @Column()
-  curr_amount: number;
-
-  @ApiProperty()
-  @Column()
-  status: string;
-
-  //@ManyToOne(type => User, user => user.projects)
-  //owner:User
+  password: string;
 }
 
 /*
