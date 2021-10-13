@@ -9,7 +9,7 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsEmail()
-  email: number;
+  email: string;
 
   @ApiProperty()
   @MinLength(6)
