@@ -63,12 +63,12 @@ export class ProjectsController {
   @ApiBadRequestResponse()
   @Post()
   async createProject(@Body() body: CreateProjectDto): Promise<Project> {
-    if (!body.name || !body.goal) {
+    if (!body.name || !body.goal || !body.ownerId) {
       // Custom  exception
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
-          error: 'Please provide name and goal',
+          error: 'Please provide name and goal and ownerId',
         },
         HttpStatus.BAD_REQUEST,
       );

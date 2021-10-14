@@ -29,7 +29,7 @@ export class Project {
   status: string;
 
   @ApiProperty({ type: () => User })
-  @ManyToOne((type) => User, (user) => user.projects)
+  @ManyToOne(() => User, (user) => user.projects, { onDelete: 'SET NULL' })
   owner: User;
 }
 

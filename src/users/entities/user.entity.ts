@@ -20,8 +20,8 @@ export class User {
   @Column()
   password: string;
 
-  @ApiProperty()
-  @OneToMany((type) => Project, (project) => project.owner)
+  @ApiProperty({ type: () => Project })
+  @OneToMany(() => Project, (project) => project.owner)
   projects: Project[];
 }
 

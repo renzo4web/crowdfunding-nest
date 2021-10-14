@@ -11,4 +11,8 @@ export class CreateProjectDto {
   @IsNumber()
   @Min(100)
   goal: number;
+
+  @ApiProperty()
+  @IsNumber()
+  ownerId: number;
 }

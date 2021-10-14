@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project-dto';
 import { UpdateProjectDto } from './dto/update-project-dto';
@@ -9,6 +11,7 @@ import { Project } from './entities/project.entity';
 export class ProjectsService {
   constructor(
     @InjectRepository(Project) private projectsRepository: Repository<Project>,
+    private usersService: UsersService,
   ) {}
 
   findAll(status?: string): Promise<Project[]> {
@@ -37,16 +40,25 @@ export class ProjectsService {
     }
   }
 
-  createProject(createProjectDto: CreateProjectDto): Promise<Project> {
+  async createProject(createProjectDto: CreateProjectDto): Promise<Project> {
+    const { ownerId, ...rest } = createProjectDto;
+
+    const user = await this.usersService.findOneById(Number(ownerId));
+
     const newProject = {
       curr_amount: 0,
       status: 'in-progress',
-      ...createProjectDto,
+      ...rest,
+      owner: user,
       goal: Number(createProjectDto.goal),
       code: createProjectDto.name.toUpperCase().slice(0, 3),
     };
 
     const saveProject = this.projectsRepository.create(newProject);
+
+    // save the project in the user
+    await this.usersService.updateUser(saveProject);
+
     return this.projectsRepository.save(saveProject);
   }
 
