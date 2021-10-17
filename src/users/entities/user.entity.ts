@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Project } from '../../projects/entities/project.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class User {
@@ -13,7 +20,7 @@ export class User {
   name: string;
 
   @ApiProperty()
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @ApiProperty()
@@ -23,14 +30,11 @@ export class User {
   @ApiProperty({ type: () => Project })
   @OneToMany(() => Project, (project) => project.owner)
   projects: Project[];
+
+  @BeforeInsert()
+  async setPassword(password: string) {
+    const salt = await bcrypt.genSalt();
+
+    this.password = await bcrypt.hash(password || this.password, salt);
+  }
 }
-
-/*
- *TODO: create entity for User
-
- class User {
-
-  @OneToMany(type=> Project, project=>project.owner)
-  projects : Project[]
- }
- * */

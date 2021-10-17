@@ -37,16 +37,21 @@ describe('ProjectsService', () => {
         id: Date.now(),
       }),
     ),
+
+    findOneOrFail: jest.fn((id) => Promise.resolve({ ...projectFields, id })),
+
+    remove: jest.fn((id: number) => Promise.resolve({ ...projectFields, id })),
   };
+
   const mockUsersService = {
     findOneById: jest.fn((id: number) => ({
       ...userResponse,
       id,
     })),
 
-    updateUser: jest.fn((project) => ({
+    updateUser: jest.fn((project: Project) => ({
       ...userResponse,
-      projects: [{ ...projectFields }],
+      projects: [{ ...projectFields, ...project }],
     })),
   };
 
@@ -72,7 +77,7 @@ describe('ProjectsService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should CREATE and save in DB', async () => {
+  it('should CREATE a project record and return that', async () => {
     const dto: CreateProjectDto = { name: 'testing', goal: 49, ownerId: 2 };
 
     const { ownerId, ...rest } = dto;
@@ -83,5 +88,17 @@ describe('ProjectsService', () => {
       owner: { ...userResponse, id: expect.any(Number) },
       id: expect.any(Number),
     });
+  });
+
+  it('should return a project by the code', async () => {
+    await service.findByProjectCode('TES');
+    expect(mockProjectsRepository.findOneOrFail).toHaveBeenCalledWith({
+      code: 'TES',
+    });
+  });
+
+  it('should findOne record and return that', async () => {
+    const id = 3;
+    expect(await service.findOne(id)).toEqual({ ...projectFields, id });
   });
 });

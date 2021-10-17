@@ -14,16 +14,18 @@ export class ProjectsService {
   ) {}
 
   findAll(status?: string): Promise<Project[]> {
-    //return status
-    //? this.projects.filter((project) => project.status === status)
-    //: this.projects;
-    return this.projectsRepository.find();
+    return status
+      ? this.projectsRepository.query(
+          `SELECT * FROM project WHERE status='${status}'`,
+        )
+      : this.projectsRepository.find();
   }
 
   async findByProjectCode(projectCode: string): Promise<Project> {
-    //return this.projects.find((project) => project.code === projectCode);
     try {
-      const project = await this.projectsRepository.findOneOrFail(projectCode);
+      const project = await this.projectsRepository.findOneOrFail({
+        code: projectCode,
+      });
       return project;
     } catch (error) {
       throw new Error('Project not found');

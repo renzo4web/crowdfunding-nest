@@ -5,6 +5,8 @@ import {
   UseGuards,
   Request,
   Body,
+  ValidationPipe,
+  HttpStatus,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AppService } from './app.service';
@@ -36,7 +38,14 @@ export class AppController {
   }
 
   @Post('signup')
-  signup(@Body() body: CreateUserDto): Promise<User> {
+  signup(
+    @Body(
+      new ValidationPipe({
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      }),
+    )
+    body: CreateUserDto,
+  ): Promise<User> {
     return this.usersService.createUser(body);
   }
 
